@@ -1,0 +1,25 @@
+```{r}
+ test_value <- 10;
+ for(x in 1:100){
+     test_value <- x;
+ }
+test_value
+```
+```{r}
+test_value <- 10;
+x <- 1;
+ while(x < 100){
+    x <- x+1;
+    test_value <- x;
+	   
+ }
+test_value
+```
+```{r}
+make_fib_counter <- function(){
+  
+}
+
+fc <- make_fib_counter();
+```
+
