@@ -1,6 +1,6 @@
 read data and setup
 ```{r}
-setwd("C:/Users/karie/Documents/UNCgrad/611/projects/611projects/")
+#setwd("C:/Users/karie/Documents/UNCgrad/611/projects/611projects/")
 df <- read.csv("./source_data/ufodata.csv")
 library(tidyverse)
 library(ggplot2)
