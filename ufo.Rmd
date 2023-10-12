@@ -1,3 +1,11 @@
+Dockerfile contents (with no #'s)
+```{r}
+# FROM rocker/verse
+# RUN R -e "install.packages(c('tidyverse', 'ggplot2'))"
+# WORKDIR /work
+# CMD ["R", "-e", "rmarkdown::render('ufo.Rmd')"]
+```
+
 read data and setup
 ```{r}
 #setwd("C:/Users/karie/Documents/UNCgrad/611/projects/611projects/")
