@@ -16,10 +16,34 @@ x <- 1;
 test_value
 ```
 ```{r}
-make_fib_counter <- function(){
-  
+make_fib_counter <- function() {
+  a <- 0
+  b <- 1
+  function() {
+    c <- a + b
+    a <<- b
+    b <<- c
+    return(a)
+  }
 }
 
-fc <- make_fib_counter();
+fc <- make_fib_counter()
+
+
+```
+
+```{r}
+make_nocci <- function(c1, c2){
+  a <- c1
+  b <- c2
+  function() {
+    c <- a + b
+    temp <- a
+    a <<- b
+    b <<- c
+    return(temp)
+}
+    }
+mc <- make_nocci(1,1)
 ```
 

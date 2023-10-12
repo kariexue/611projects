@@ -1,0 +1,117 @@
+read data and setup
+```{r}
+setwd("C:/Users/karie/Documents/UNCgrad/611/projects/611projects/")
+df <- read.csv("./source_data/ufodata.csv")
+library(tidyverse)
+library(ggplot2)
+```
+
+data cleaning
+```{r}
+df$form =nchar(df$Date...Time)
+sample <- df %>% group_by(form) %>% slice(1:5)
+#sample
+
+shortform = df[df$form<=10,]
+temp=lapply(lapply(shortform$Date...Time,str_split,"/"),`[[`,1)
+shortform$Year = lapply(temp,`[[`,3)
+shortform$Year = as.numeric(shortform$Year)+2000 
+shortform$Month = lapply(temp,`[[`,1)
+shortform$Month = as.numeric(shortform$Month)
+shortform$Day = lapply(temp,`[[`,2)
+shortform$Day = as.numeric(shortform$Day)
+
+longform = df[(df$form %in% c(13,14)),]
+temp=lapply(lapply(longform$Date...Time,str_split,"\\/|\\:| "),`[[`,1)
+longform$Year = lapply(temp,`[[`,3)
+longform$Year = as.numeric(longform$Year)+2000 
+longform$Month = lapply(temp,`[[`,1)
+longform$Month = as.numeric(longform$Month)
+longform$Day = lapply(temp,`[[`,2)
+longform$Day = as.numeric(longform$Day)
+longform$Hour = lapply(temp,`[[`,4)
+longform$Hour = as.numeric(longform$Hour)
+longform$Minute = lapply(temp,`[[`,5)
+longform$Minute = as.numeric(longform$Minute)
+
+longest = df[df$form>15,]
+temp=lapply(lapply(longest$Date...Time,str_split,"\\-|\\.| "),`[[`,1)
+longest$Year = lapply(temp,`[[`,1)
+longest$Year = as.numeric(longest$Year)
+longest$Month = lapply(temp,`[[`,2)
+longest$Month = as.numeric(longest$Month)
+longest$Day = lapply(temp,`[[`,3)
+longest$Day = as.numeric(longest$Day)
+longest$Hour = lapply(temp,`[[`,4)
+longest$Hour = as.numeric(longest$Hour)
+longest$Minute = lapply(temp,`[[`,5)
+longest$Minute = as.numeric(longest$Minute)
+longest$Second = lapply(temp,`[[`,6)
+longest$Second = as.numeric(longest$Second)
+
+shortform[,setdiff(names(longest), names(shortform))] <- NA
+longform[,setdiff(names(longest), names(longform))] <- NA
+
+newdf=rbind(shortform,longform,longest)
+
+newdf = newdf %>% mutate(Date...Time=NULL, form=NULL)
+```
+
+
+by state
+```{r}
+df2 <- newdf %>% group_by(State) %>% tally() 
+
+ggplot(df2)+
+  geom_histogram(aes(n)) +
+  xlab("Count of sightings")+
+  ylab("Number of States")+
+  ggtitle("Count of Sightings Per State")
+```
+
+by hour
+```{r}
+df3 <- newdf %>% group_by(Hour) %>% tally() %>% na.omit()
+
+ggplot(df3)+
+  geom_histogram(aes(n))+
+  xlab("Count of sightings")+
+  ylab("Number of Hours")+
+  ggtitle("Count of Sightings Per Hour")
+  
+```
+
+by Month
+```{r}
+df4 <- newdf %>% group_by(Month) %>% tally() 
+
+ggplot(df4)+
+  geom_histogram(aes(n))+  
+  xlab("Count of sightings")+
+  ylab("Number of Months")+
+  ggtitle("Count of Sightings Per Month")
+  
+```
+
+
+by Day & Month
+```{r}
+df5 <- newdf %>% group_by(Month,Day) %>% tally() 
+
+ggplot(df5)+
+  geom_histogram(aes(n))+
+  xlab("Count of sightings")+
+  ylab("Number of Days")+
+  ggtitle("Count of Sightings Per Day in a Year")
+  
+```
+
+Shape vs State
+```{r}
+df6 <- newdf %>% group_by(Shape, State) %>% tally() 
+ggplot(df6)+
+  geom_tile(aes(x=State,y=Shape,fill=n))+
+  scale_fill_gradient(low="purple", high="yellow")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=5),axis.text.y = element_text(size=7))
+```
+
